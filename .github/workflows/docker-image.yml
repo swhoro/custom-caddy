@@ -15,7 +15,9 @@ jobs:
     - uses: actions/checkout@v3
     - name: Docker Login
       run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u swhoro --password-stdin
+    - name: Set Tag
+      run: echo "DAT=$(date +%y-%m-%d)" >> $GITHUB_ENV
     - name: Build the Caddy image
-      run: export DAT=$(date +%y-%m-%d) && docker build . --file Dockerfile --tag swhoro/caddy:$DAT && docker tag swhoro/caddy:$DAT swhoro/caddy:latest
+      run: docker build . --file Dockerfile --tag swhoro/caddy:$DAT && docker tag swhoro/caddy:$DAT swhoro/caddy:latest
     - name: Push image
       run: docker push swhoro/caddy:$DAT && docker push swhoro/caddy:latest
