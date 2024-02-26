@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  schedule:
+  - cron: "0 0 */15 * *"
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker Login
+      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u swhoro --password-stdin
+    - name: Build the Caddy image
+      run: export DAT=$(date +%y-%m-%d) && docker build . --file Dockerfile --tag swhoro/caddy:$DAT && docker tag swhoro/caddy:$DAT swhoro/caddy:latest
+    - name: Push image
+      run: docker push swhoro/caddy:$DAT && docker push swhoro/caddy:latest
