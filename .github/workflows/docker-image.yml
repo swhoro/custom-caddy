@@ -6,13 +6,10 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Docker Login
       run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u swhoro --password-stdin
     - name: Set Tag
@@ -21,3 +18,11 @@ jobs:
       run: docker build . --file Dockerfile --tag swhoro/caddy:$DAT && docker tag swhoro/caddy:$DAT swhoro/caddy:latest
     - name: Push image
       run: docker push swhoro/caddy:$DAT && docker push swhoro/caddy:latest
+  keepalive-job:
+    name: Keepalive Workflow
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
